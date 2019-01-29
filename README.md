@@ -1,5 +1,5 @@
 # Healthware Web Portal
-Web interface and cloud processing system for health insurance companys
+Web interface and cloud processing system for health insurance companies
 
 ## Development Team
 * [Haqq Tertuliano](https://github.com/htertuliano)
