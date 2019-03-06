@@ -42,7 +42,8 @@ public class Authorization {
             } else {
                 String sessionID = Long.toHexString(Utilities.getNextUID());
                 sessions.put(sessionID, account);
-                response.cookie(SESSION_COOKIE, sessionID);
+                logger.info(sessionID);
+                response.cookie("/", SESSION_COOKIE, sessionID, 3600, false, true);
             }
             return "";
         });
@@ -61,7 +62,9 @@ public class Authorization {
             }
 
             try {
-                Account.create(body.username, body.email, Utilities.getSHA(body.password), Account.Type.PATIENT);
+                if (!Account.create(body.username, body.email, Utilities.getSHA(body.password), Account.Type.PATIENT)) {
+                    throw new Exception("Failed to insert row");
+                }
             }  catch (Exception ex) {
                 logger.error("Account.create failed", ex);
                 response.status(500);

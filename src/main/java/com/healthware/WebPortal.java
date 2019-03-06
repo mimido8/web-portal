@@ -21,6 +21,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class WebPortal {
@@ -80,6 +82,18 @@ public class WebPortal {
         Spark.externalStaticFileLocation("public");
 
         Authorization.initializeRoutes();
+
+        Spark.get("/patient-dashboard", (request, response) -> {
+            try {
+                Map<String, Object> context = new HashMap<>();
+                context.put("id", request.cookie("t5hsession"));
+                logger.info(request.cookie("t5hsession"));
+                return templateEngine.render(templateFileLocator.getString("patient-dashboard.html", Charset.forName("UTF-8"), null), context);
+            } catch (IOException ex) {
+                logger.error("Failed to render dashboard", ex);
+                return null;
+            }
+        });
 
         Spark.get("/:view", (request, response) -> {
             try {
