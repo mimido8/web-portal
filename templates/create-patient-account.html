@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Create Account</title>
+    </head>
+    <body>
+        <label for="username">Username: </label>
+        <input id="username" type="text"/>
+        <br>
+        <label for="email">Email: </label>
+        <input id="email" type="text"/>
+        <br>
+        <label for="password">Password: </label>
+        <input id="password" type="password"/>
+        <br>
+        <label for="confirm-password">Confirm Password: </label>
+        <input id="confirm-password" type="password"/>
+        <br>
+        <span id="error-message" style="display:none; color:red;">Invalid credentials<br></span>
+        <button id="create-account">Create Account</button>
+        <script>
+            let errorMessageElement = document.querySelector('#error-message')
+            let passwordElement = document.querySelector('#password')
+            let confirmPasswordElement = document.querySelector('#confirm-password')
+            document.querySelector('#create-account').addEventListener('click', e => {
+                if (passwordElement.value !== confirmPasswordElement.value) {
+                    errorMessageElement.textContent = 'Passwords do not match'
+                    errorMessageElement.style.display = 'block'
+                    return
+                }
+                
+                let body = JSON.stringify({
+                    username: document.querySelector('#username').value,
+                    email: document.querySelector('#email').value,
+                    password: passwordElement.value
+                })
+
+                fetch('./api/create-patient-account', {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body
+                })
+                .then(response => {
+                    if (response.status !== 200) {
+                        errorMessageElement.textContent = `Failed to create account: ${response.status} ${response.statusMessage}`
+                        errorMessageElement.style.display = 'block'
+                    } else {
+                        window.location.replace('./login')
+                    }
+                })
+                .catch(err => {
+                    errorMessageElement.textContent = `Failed to create account: ${err}`
+                    errorMessageElement.style.display = 'block'
+                })
+            });
+        </script>
+    </body>
+</html>

@@ -1,11 +1,10 @@
 package com.healthware.models;
 
+import com.healthware.Utilities;
 import com.healthware.WebPortal;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Account {
     public enum Type {
@@ -18,16 +17,29 @@ public class Account {
     public String passwordHash;
     public Type type;
 
-    private static String getSHA(String password) throws NoSuchAlgorithmException {
-        MessageDigest sha = MessageDigest.getInstance("SHA-256");
-        StringBuilder hexBuilder = new StringBuilder();
-        for (byte b : sha.digest(password.getBytes())) hexBuilder.append(String.format("%02x", b));
-        return hexBuilder.toString();
+    private Account(long id, String username, String email, String passwordHash, Type type) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.type = type;
     }
 
-    public static boolean create(String username, String email, String password, Type type) throws Exception {
-        Connection connection = WebPortal.getDatabaseConnectionPool().getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO \"Accounts\" (id, username, email, password_hash, type) VALUES (" + WebPortal.getNextID() + ", '" + username + "', '" + email + "', '" + getSHA(password) + "', '" + type.toString() + "');");
-        return statement.execute();
+    public static boolean create(String username, String email, String passwordHash, Type type) throws Exception {
+        int updated = WebPortal.executeUpdate(
+            "INSERT INTO accounts (id, username, email, password_hash, type) VALUES (",
+            Utilities.getNextUID(), ", '", username, "', '", email, "', '", passwordHash, "', '", type.toString(), "')");
+        return updated > 0;
+    }
+
+    public static Account getByUsername(String username) throws SQLException {
+        ResultSet results = WebPortal.executeQuery("SELECT * FROM accounts WHERE username = '", username, "'");
+        if (!results.next()) return null;
+        else return new Account(
+            results.getLong("id"),
+            results.getString("username"),
+            results.getString("email"),
+            results.getString("password_hash"),
+            Type.valueOf(results.getString("type")));
     }
 }

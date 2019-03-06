@@ -13,7 +13,7 @@ public class Configuration {
     public String databasePassword = null;
 
     public static Configuration load() throws Exception {
-        Configuration configuration = (new GsonBuilder()).create().fromJson(
+        Configuration configuration = Utilities.deserializeJSON(
                 FileUtils.readFileToString(new File("config.json"), Charset.forName("UTF-8")),
                 Configuration.class);
         Assert.notNull(configuration.databaseURL);

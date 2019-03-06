@@ -1,5 +1,7 @@
 package com.healthware;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.healthware.models.Account;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
@@ -14,8 +16,12 @@ import spark.Spark;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class WebPortal {
 
@@ -23,21 +29,17 @@ public class WebPortal {
     private static Configuration configuration;
     private static ComboPooledDataSource databaseConnectionPool;
     private static Jinjava templateEngine = new Jinjava(new JinjavaConfig());
-    private static long lastTime = 0;
-    private static long nextID = 0;
 
-    public static ComboPooledDataSource getDatabaseConnectionPool() {
-        return databaseConnectionPool;
+    public static ResultSet executeQuery(String... query) throws SQLException {
+        Connection connection = databaseConnectionPool.getConnection();
+        PreparedStatement statement = connection.prepareStatement(String.join("", query));
+        return statement.executeQuery();
     }
 
-    public static long getNextID() {
-        long time = System.currentTimeMillis();
-        if (time != lastTime) {
-            nextID = 0;
-            return (lastTime = time) * 1000;
-        } else {
-            return (lastTime * 1000) + nextID++;
-        }
+    public static int executeUpdate(Object... query) throws SQLException {
+        Connection connection = databaseConnectionPool.getConnection();
+        PreparedStatement statement = connection.prepareStatement(String.join("", Arrays.stream(query).map(o -> o.toString()).collect(Collectors.toList())));
+        return statement.executeUpdate();
     }
 
     public static void main(String[] args) {
@@ -77,15 +79,7 @@ public class WebPortal {
         Spark.port(8080);
         Spark.externalStaticFileLocation("public");
 
-        Spark.get("/test", (request, response) -> {
-            try {
-                logger.info("Do requets");
-                logger.info(Boolean.toString(Account.create("quick", "jimmy@email.com", "I have password", Account.Type.PATIENT)));
-            } catch (Throwable ex) {
-                logger.error("Failed to create account due to " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
-            }
-            return "";
-        });
+        Authorization.initializeRoutes();
 
         Spark.get("/:view", (request, response) -> {
             try {
