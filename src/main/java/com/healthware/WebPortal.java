@@ -1,20 +1,22 @@
 package com.healthware;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.healthware.models.Account;
+import com.healthware.annotations.GET;
+import com.healthware.annotations.ControllerFactory;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 import com.hubspot.jinjava.interpret.JinjavaInterpreter;
 import com.hubspot.jinjava.loader.ResourceLocator;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.io.FileUtils;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,7 +32,8 @@ public class WebPortal {
     private static Logger logger = LoggerFactory.getLogger(WebPortal.class);
     private static Configuration configuration;
     private static ComboPooledDataSource databaseConnectionPool;
-    private static Jinjava templateEngine = new Jinjava(new JinjavaConfig());
+    public static Jinjava templateEngine = new Jinjava(new JinjavaConfig());
+    public static ResourceLocator templateFileLocator;
 
     public static ResultSet executeQuery(String... query) throws SQLException {
         Connection connection = databaseConnectionPool.getConnection();
@@ -65,7 +68,7 @@ public class WebPortal {
             return;
         }
 
-        ResourceLocator templateFileLocator = new ResourceLocator() {
+        templateFileLocator = new ResourceLocator() {
             @Override
             public String getString(String fullName, Charset encoding, JinjavaInterpreter interpreter) throws IOException {
                 File importFile = new File("templates", fullName);
@@ -95,12 +98,25 @@ public class WebPortal {
             }
         });
 
-        Spark.get("/:view", (request, response) -> {
+        Reflections reflections = new Reflections("com.healthware.controllers", new MethodAnnotationsScanner());
+
+        logger.info("Loading routers");
+        Map<Class<?>, Object> controllers = new HashMap<>();
+        for (Method controllerFactory : reflections.getMethodsAnnotatedWith(ControllerFactory.class)) {
             try {
-                return templateEngine.render(templateFileLocator.getString(request.params("view") + ".html", Charset.forName("UTF-8"), null), null);
-            } catch (IOException ex) {
-                return null;
+                controllers.put(controllerFactory.getDeclaringClass(), controllerFactory.invoke(null));
+            } catch (Exception ex) {
+                logger.error("Failed to create controller " + controllerFactory.getDeclaringClass().getSimpleName(), ex);
             }
-        });
+        }
+
+        logger.info("Registering GET routes");
+        for (Method getRoute : reflections.getMethodsAnnotatedWith(GET.class)) {
+            try {
+                Spark.get(getRoute.getDeclaredAnnotation(GET.class).value(), (request, response) -> getRoute.invoke(controllers.get(getRoute.getDeclaringClass()), request, response));
+            } catch (Exception ex) {
+                logger.error("Failed to create route from " + getRoute.getName(), ex);
+            }
+        }
     }
 }
