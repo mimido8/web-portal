@@ -35,9 +35,9 @@ public class WebPortal {
     public static Jinjava templateEngine = new Jinjava(new JinjavaConfig());
     public static ResourceLocator templateFileLocator;
 
-    public static ResultSet executeQuery(String... query) throws SQLException {
+    public static ResultSet executeQuery(Object... query) throws SQLException {
         Connection connection = databaseConnectionPool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(String.join("", query));
+        PreparedStatement statement = connection.prepareStatement(String.join("", Arrays.stream(query).map(o -> o.toString()).collect(Collectors.toList())));
         return statement.executeQuery();
     }
 

@@ -11,6 +11,7 @@ public class Configuration {
     public String databaseURL = null;
     public String databaseUsername = null;
     public String databasePassword = null;
+    public String testDatabaseURL = null;
 
     public static Configuration load() throws Exception {
         Configuration configuration = Utilities.deserializeJSON(
