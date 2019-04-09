@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Account {
+    //create, getByUsername
+
     public enum Type {
         PATIENT, EMPLOYEE
     }

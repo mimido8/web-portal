@@ -3,17 +3,20 @@ package com.healthware.models;
 import com.healthware.Utilities;
 import com.healthware.WebPortal;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Plan {
+    //create, update, getAll
+
     public long id;
     public String name;
-    public double premium;
-    public double deductible;
-    public double copay;
+    public BigDecimal premium;
+    public BigDecimal deductible;
+    public BigDecimal copay;
 
-    public Plan(long id, String name, double premium, double deductible, double copay) {
+    private Plan(long id, String name, BigDecimal premium, BigDecimal deductible, BigDecimal copay) {
         this.id = id;
         this.name = name;
         this.premium = premium;
@@ -33,8 +36,8 @@ public class Plan {
         else return new Plan(
                 results.getLong("id"),
                 results.getString("name"),
-                results.getDouble("premium"),
-                results.getDouble("deductible"),
-                results.getDouble("copay"));
+                results.getBigDecimal("premium"),
+                results.getBigDecimal("deductible"),
+                results.getBigDecimal("copay"));
     }
 }

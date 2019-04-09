@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Patient {
+    //create, getByAccountID
+
     public long id;
     public long accountID;
     public String name;
@@ -16,7 +18,7 @@ public class Patient {
     public Date signupDate;
     public long planID;
 
-    public Patient(long id, long accountID, String name, Date birthDate, String phone, Date signupDate, long planID) {
+    private Patient(long id, long accountID, String name, Date birthDate, String phone, Date signupDate, long planID) {
         this.id = id;
         this.accountID = accountID;
         this.name = name;
