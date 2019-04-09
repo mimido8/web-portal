@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class Account {
     public enum Type {
-        PATIENT, EMPLOYEE, PROVIDER
+        PATIENT, EMPLOYEE
     }
 
     public long id;
@@ -26,14 +26,13 @@ public class Account {
     }
 
     public static boolean create(String username, String email, String passwordHash, Type type) throws Exception {
-        int updated = WebPortal.executeUpdate(
-            "INSERT INTO accounts (id, username, email, password_hash, type) VALUES (",
-            Utilities.getNextUID(), ", '", username, "', '", email, "', '", passwordHash, "', '", type.toString(), "')");
-        return updated > 0;
+        return WebPortal.buildQuery("INSERT INTO accounts (id, username, email, password_hash, type)")
+                .values(Utilities.getNextUID(), username, email, passwordHash, type.toString())
+                .andTryUpdate();
     }
 
     public static Account getByUsername(String username) throws SQLException {
-        ResultSet results = WebPortal.executeQuery("SELECT * FROM accounts WHERE username = '", username, "'");
+        ResultSet results = WebPortal.buildQuery("SELECT * FROM accounts WHERE username = '%1'", username).andExecute();
         if (!results.next()) return null;
         else return new Account(
             results.getLong("id"),

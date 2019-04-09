@@ -35,16 +35,8 @@ public class WebPortal {
     public static Jinjava templateEngine = new Jinjava(new JinjavaConfig());
     public static ResourceLocator templateFileLocator;
 
-    public static ResultSet executeQuery(Object... query) throws SQLException {
-        Connection connection = databaseConnectionPool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(String.join("", Arrays.stream(query).map(o -> o.toString()).collect(Collectors.toList())));
-        return statement.executeQuery();
-    }
-
-    public static int executeUpdate(Object... query) throws SQLException {
-        Connection connection = databaseConnectionPool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(String.join("", Arrays.stream(query).map(o -> o.toString()).collect(Collectors.toList())));
-        return statement.executeUpdate();
+    public static QueryBuilder buildQuery(String fragment, Object... args) throws SQLException {
+        return new QueryBuilder(databaseConnectionPool.getConnection(), fragment, args);
     }
 
     public static void main(String[] args) {
