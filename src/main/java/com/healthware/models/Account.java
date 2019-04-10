@@ -1,5 +1,6 @@
 package com.healthware.models;
 
+import com.healthware.SQLRow;
 import com.healthware.Utilities;
 import com.healthware.WebPortal;
 
@@ -19,7 +20,8 @@ public class Account {
     public String passwordHash;
     public Type type;
 
-    private Account(long id, String username, String email, String passwordHash, Type type) {
+    @SQLRow.DAO({"id", "username", "email", "password_hash", "type"})
+    private Account(Long id, String username, String email, String passwordHash, Type type) {
         this.id = id;
         this.username = username;
         this.email = email;

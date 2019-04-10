@@ -1,6 +1,6 @@
 package com.healthware.messages;
 
-public class AuthorizeRequestBody {
+public class AuthorizationBody {
     public String username = "";
     public String password = "";
 }

@@ -1,50 +1,30 @@
 package com.healthware;
 
-import com.healthware.annotations.GET;
-import com.healthware.annotations.ControllerFactory;
-import com.hubspot.jinjava.Jinjava;
-import com.hubspot.jinjava.JinjavaConfig;
-import com.hubspot.jinjava.interpret.JinjavaInterpreter;
-import com.hubspot.jinjava.loader.ResourceLocator;
+import com.healthware.models.Account;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.apache.commons.io.FileUtils;
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import spark.Spark;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.nio.charset.Charset;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+
+import static org.slf4j.LoggerFactory.getLogger;
+import static spark.Spark.port;
 
 public class WebPortal {
-
-    private static Logger logger = LoggerFactory.getLogger(WebPortal.class);
-    private static Configuration configuration;
     private static ComboPooledDataSource databaseConnectionPool;
-    public static Jinjava templateEngine = new Jinjava(new JinjavaConfig());
-    public static ResourceLocator templateFileLocator;
 
     public static QueryBuilder buildQuery(String fragment, Object... args) throws SQLException {
         return new QueryBuilder(databaseConnectionPool.getConnection(), fragment, args);
     }
 
     public static void main(String[] args) {
+        Logger logger = getLogger(WebPortal.class);
+
         logger.info("Loading configuration");
+        Configuration configuration;
         try {
             configuration = Configuration.load();
         } catch (Exception ex) {
-            logger.error("Failed to load configuration due to " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
+            logger.error("Failed to load configuration", ex);
             return;
         }
 
@@ -56,29 +36,38 @@ public class WebPortal {
             databaseConnectionPool.setUser(configuration.databaseUsername);
             databaseConnectionPool.setPassword(configuration.databasePassword);
         } catch (Exception ex) {
-            logger.error("Failed to load database connection pool due to " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
+            logger.error("Failed to load database connection pool", ex);
             return;
         }
 
-        templateFileLocator = new ResourceLocator() {
-            @Override
-            public String getString(String fullName, Charset encoding, JinjavaInterpreter interpreter) throws IOException {
-                File importFile = new File("templates", fullName);
-                File templateDirectory = new File("templates");
-                if (!importFile.getAbsolutePath().startsWith(templateDirectory.getAbsolutePath()) || !importFile.isFile()) throw new IOException("Template import path must be within template folder");
-                return FileUtils.readFileToString(importFile, encoding);
-            }
-        };
+        try {
+           Account a = SQLRow.construct(Account.class, WebPortal.buildQuery("SELECT * FROM accounts WHERE username = 'lukas'").andExecute());
+           logger.info(a.username);
+        } catch (Exception ex) {
+            logger.error("Mapper failed", ex);
+        }
 
-        templateEngine.setResourceLocator(templateFileLocator);
+        return;
 
-        logger.info("Configuring HTTP server");
-        Spark.port(8080);
-        Spark.externalStaticFileLocation("public");
+        /*logger.info("Configuring HTTP server");
+        port(8080);
+        externalStaticFileLocation("public");
 
-        Authorization.initializeRoutes();
+        Map<String, Long> sessions = new HashMap<>();
 
-        Spark.get("/patient-dashboard", (request, response) -> {
+        AuthenticationFilter authFilter = new AuthenticationFilter(sessions);
+        asList("/patient/:view", "/admin/:view").forEach(path ->
+            Spark.before(path, authFilter::handle));
+
+        asList("/:view", "/patient/:view", "/admin/:view").forEach(path ->
+            Spark.get(path, (request, response) ->
+                HTMLTemplateRoute.withoutContext(request.params("view") + ".html").handle(request, response)));
+
+        PatientAccountCreationRoute patientAccountCreationRoute = new PatientAccountCreationRoute();
+        Spark.post("/create-patient-account", (request, response) ->
+            patientAccountCreationRoute.handle(request, response, PatientAccountCreationBody.class));*/
+
+        /*Spark.get("/patient-dashboard", (request, response) -> {
             try {
                 Map<String, Object> context = new HashMap<>();
                 context.put("id", request.cookie("t5hsession"));
@@ -88,27 +77,6 @@ public class WebPortal {
                 logger.error("Failed to render dashboard", ex);
                 return null;
             }
-        });
-
-        Reflections reflections = new Reflections("com.healthware.controllers", new MethodAnnotationsScanner());
-
-        logger.info("Loading routers");
-        Map<Class<?>, Object> controllers = new HashMap<>();
-        for (Method controllerFactory : reflections.getMethodsAnnotatedWith(ControllerFactory.class)) {
-            try {
-                controllers.put(controllerFactory.getDeclaringClass(), controllerFactory.invoke(null));
-            } catch (Exception ex) {
-                logger.error("Failed to create controller " + controllerFactory.getDeclaringClass().getSimpleName(), ex);
-            }
-        }
-
-        logger.info("Registering GET routes");
-        for (Method getRoute : reflections.getMethodsAnnotatedWith(GET.class)) {
-            try {
-                Spark.get(getRoute.getDeclaredAnnotation(GET.class).value(), (request, response) -> getRoute.invoke(controllers.get(getRoute.getDeclaringClass()), request, response));
-            } catch (Exception ex) {
-                logger.error("Failed to create route from " + getRoute.getName(), ex);
-            }
-        }
+        });*/
     }
 }

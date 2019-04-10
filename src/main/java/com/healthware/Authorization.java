@@ -1,7 +1,7 @@
 package com.healthware;
 
-import com.healthware.messages.AuthorizeRequestBody;
-import com.healthware.messages.CreatePatientAccountRequestBody;
+import com.healthware.messages.AuthorizationBody;
+import com.healthware.messages.PatientAccountCreationBody;
 import com.healthware.models.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,9 @@ public class Authorization {
 
     public static void initializeRoutes() {
         Spark.post("/api/authorize", (request, response) -> {
-            AuthorizeRequestBody body;
+            AuthorizationBody body;
             try {
-                body = Utilities.deserializeJSON(request.body(), AuthorizeRequestBody.class);
+                body = Utilities.deserializeJSON(request.body(), AuthorizationBody.class);
             } catch (Exception ex) {
                 logger.error("Utilities.deserializeJSON failed", ex);
                 response.status(400);
@@ -49,9 +49,9 @@ public class Authorization {
         });
 
         Spark.post("/api/create-patient-account", (request, response) -> {
-            CreatePatientAccountRequestBody body;
+            PatientAccountCreationBody body;
             try {
-                body = Utilities.deserializeJSON(request.body(), CreatePatientAccountRequestBody.class);
+                body = Utilities.deserializeJSON(request.body(), PatientAccountCreationBody.class);
                 Assert.isTrue(body.username != null && body.username.length() >= 4, "Username meets requirements");
                 Assert.isTrue(body.password != null && body.password.length() >= 8, "Password meets requirements");
                 Assert.isTrue(body.email != null && body.email.length() >= 5, "Email meets requirements");

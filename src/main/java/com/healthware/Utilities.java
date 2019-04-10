@@ -16,6 +16,10 @@ public class Utilities {
         return gson.fromJson(body, type);
     }
 
+    public static String serializeJSON(Object o) {
+        return gson.toJson(o);
+    }
+
     public static long getNextUID() {
         long time = System.currentTimeMillis();
         if (time != lastUIDGenerationTime) {
