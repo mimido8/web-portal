@@ -1,38 +1,30 @@
 package com.healthware.models;
 
-import com.healthware.SQLRow;
-import com.healthware.Utilities;
 import com.healthware.WebPortal;
+import com.healthware.base.Table;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Account {
+public class Account extends Table.Row {
     //create, getByUsername
 
     public enum Type {
         PATIENT, EMPLOYEE
     }
 
-    public long id;
-    public String username;
-    public String email;
-    public String passwordHash;
-    public Type type;
+    public @Table.PrimaryKey("id") long id;
+    public @Table.Column("username") String username;
+    public @Table.Column("email") String email;
+    public @Table.Column("password_hash") String passwordHash;
+    public @Table.Column("type") Type type;
 
-    @SQLRow.DAO({"id", "username", "email", "password_hash", "type"})
-    private Account(Long id, String username, String email, String passwordHash, Type type) {
+    private Account(long id, String username, String email, String passwordHash, Type type) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
         this.type = type;
-    }
-
-    public static boolean create(String username, String email, String passwordHash, Type type) throws Exception {
-        return WebPortal.buildQuery("INSERT INTO accounts (id, username, email, password_hash, type)")
-                .values(Utilities.getNextUID(), username, email, passwordHash, type.toString())
-                .andTryUpdate();
     }
 
     public static Account getByUsername(String username) throws SQLException {

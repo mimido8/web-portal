@@ -1,20 +1,26 @@
 package com.healthware;
 
+import com.healthware.base.Database;
+import com.healthware.base.HTMLTemplateRoute;
+import com.healthware.base.QueryBuilder;
+import com.healthware.messages.PatientAccountCreationBody;
 import com.healthware.models.Account;
+import com.healthware.routes.AuthenticationFilter;
+import com.healthware.routes.PatientAccountCreationRoute;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.slf4j.Logger;
+import spark.Spark;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.slf4j.LoggerFactory.getLogger;
+import static spark.Spark.externalStaticFileLocation;
 import static spark.Spark.port;
 
 public class WebPortal {
-    private static ComboPooledDataSource databaseConnectionPool;
-
-    public static QueryBuilder buildQuery(String fragment, Object... args) throws SQLException {
-        return new QueryBuilder(databaseConnectionPool.getConnection(), fragment, args);
-    }
 
     public static void main(String[] args) {
         Logger logger = getLogger(WebPortal.class);
@@ -29,27 +35,15 @@ public class WebPortal {
         }
 
         logger.info("Configuring database connection pool");
+        Database database;
         try {
-            databaseConnectionPool = new ComboPooledDataSource();
-            databaseConnectionPool.setDriverClass("org.postgresql.Driver");
-            databaseConnectionPool.setJdbcUrl(configuration.databaseURL);
-            databaseConnectionPool.setUser(configuration.databaseUsername);
-            databaseConnectionPool.setPassword(configuration.databasePassword);
+            database = Database.connect(configuration.databaseURL, configuration.databaseUsername, configuration.databasePassword);
         } catch (Exception ex) {
             logger.error("Failed to load database connection pool", ex);
             return;
         }
 
-        try {
-           Account a = SQLRow.construct(Account.class, WebPortal.buildQuery("SELECT * FROM accounts WHERE username = 'lukas'").andExecute());
-           logger.info(a.username);
-        } catch (Exception ex) {
-            logger.error("Mapper failed", ex);
-        }
-
-        return;
-
-        /*logger.info("Configuring HTTP server");
+        logger.info("Configuring HTTP server");
         port(8080);
         externalStaticFileLocation("public");
 
@@ -65,7 +59,7 @@ public class WebPortal {
 
         PatientAccountCreationRoute patientAccountCreationRoute = new PatientAccountCreationRoute();
         Spark.post("/create-patient-account", (request, response) ->
-            patientAccountCreationRoute.handle(request, response, PatientAccountCreationBody.class));*/
+            patientAccountCreationRoute.handle(request, response, PatientAccountCreationBody.class));
 
         /*Spark.get("/patient-dashboard", (request, response) -> {
             try {

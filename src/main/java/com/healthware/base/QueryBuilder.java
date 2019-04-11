@@ -1,4 +1,4 @@
-package com.healthware;
+package com.healthware.base;
 
 import java.sql.Connection;
 import java.sql.Date;
