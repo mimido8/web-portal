@@ -1,4 +1,4 @@
-package com.healthware.base;
+package com.healthware.base.http;
 
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;

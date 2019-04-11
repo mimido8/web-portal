@@ -1,8 +1,8 @@
 package com.healthware.routes;
 
-import com.healthware.base.HTTPRequest;
-import com.healthware.base.HTTPResponse;
-import com.healthware.base.Route;
+import com.healthware.base.http.HTTPRequest;
+import com.healthware.base.http.HTTPResponse;
+import com.healthware.base.http.Route;
 
 import java.util.Map;
 

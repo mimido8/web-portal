@@ -1,14 +1,14 @@
 package com.healthware.routes;
 
 import com.healthware.Utilities;
-import com.healthware.base.HTTPRequest;
-import com.healthware.base.HTTPResponse;
-import com.healthware.base.RouteWithJSONBody;
+import com.healthware.base.http.HTTPRequest;
+import com.healthware.base.http.HTTPResponse;
+import com.healthware.base.http.RouteWithJSONBody;
 import com.healthware.messages.PatientAccountCreationBody;
 import com.healthware.models.Account;
 import spark.utils.Assert;
 
-import static com.healthware.base.HTTPResponse.status;
+import static com.healthware.base.http.HTTPResponse.status;
 
 public class PatientAccountCreationRoute extends RouteWithJSONBody<PatientAccountCreationBody> {
     @Override

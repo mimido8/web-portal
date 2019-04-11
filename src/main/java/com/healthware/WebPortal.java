@@ -1,17 +1,13 @@
 package com.healthware;
 
-import com.healthware.base.Database;
-import com.healthware.base.HTMLTemplateRoute;
-import com.healthware.base.QueryBuilder;
+import com.healthware.base.sql.Database;
+import com.healthware.base.http.HTMLTemplateRoute;
 import com.healthware.messages.PatientAccountCreationBody;
-import com.healthware.models.Account;
 import com.healthware.routes.AuthenticationFilter;
 import com.healthware.routes.PatientAccountCreationRoute;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.slf4j.Logger;
 import spark.Spark;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 

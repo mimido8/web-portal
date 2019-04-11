@@ -1,4 +1,4 @@
-package com.healthware.base;
+package com.healthware.base.http;
 
 import spark.Response;
 

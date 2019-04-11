@@ -1,7 +1,8 @@
 package com.healthware.models;
 
 import com.healthware.WebPortal;
-import com.healthware.base.Table;
+import com.healthware.base.sql.Column;
+import com.healthware.base.sql.Table;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ public class Account extends Table.Row {
     }
 
     public @Table.PrimaryKey("id") long id;
-    public @Table.Column("username") String username;
+    public @Column("username", primary=false) String username;
     public @Table.Column("email") String email;
     public @Table.Column("password_hash") String passwordHash;
     public @Table.Column("type") Type type;
