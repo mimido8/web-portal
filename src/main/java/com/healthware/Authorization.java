@@ -28,14 +28,14 @@ public class Authorization {
                 return "";
             }
 
-            Account account;
-            try {
+            Account account = null;
+            /*try {
                 account = Account.getByUsername(body.username);
             }  catch (Exception ex) {
                 logger.error("Account.getByUsername failed", ex);
                 response.status(500);
                 return "";
-            }
+            }*/
 
             if (account == null || !Utilities.getSHA(body.password).equals(account.passwordHash)) {
                 response.status(403);
@@ -61,14 +61,14 @@ public class Authorization {
                 return "";
             }
 
-            try {
+            /*try {
                 if (!Account.create(body.username, body.email, Utilities.getSHA(body.password), Account.Type.PATIENT)) {
                     throw new Exception("Failed to insert row");
                 }
             }  catch (Exception ex) {
                 logger.error("Account.create failed", ex);
                 response.status(500);
-            }
+            }*/
 
             return "";
         });

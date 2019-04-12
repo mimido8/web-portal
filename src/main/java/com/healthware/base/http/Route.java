@@ -3,16 +3,17 @@ package com.healthware.base.http;
 import spark.Request;
 import spark.Response;
 
-public abstract class Route {
-    protected abstract HTTPResponse<String> handle(HTTPRequest request) throws Exception;
+import static com.healthware.base.http.HTTPResponse.status;
 
-    public String handle(Request q, Response r) {
-        HTTPResponse response;
+public abstract class Route {
+    protected abstract HTTPResponse<String> getResponse(HTTPRequest request) throws Exception;
+
+    public HTTPResponse<String> handle(HTTPRequest request) {
         try {
-            response = handle(new HTTPRequest(q));
+            HTTPResponse<String> response = getResponse(request);
+            return response == null ? status(404) : response;
         } catch (Exception ex) {
-            return HTTPResponse.status(500).apply(r);
+            return status(500);
         }
-        return response.apply(r);
     }
 }

@@ -35,11 +35,11 @@ public abstract class HTMLTemplateRoute extends Route {
         this.errorOnMissingTemplates = true;
     }
 
-    protected abstract Map<String, Object> render(HTTPRequest request) throws Exception;
+    protected abstract Map<String, Object> getContext(HTTPRequest request) throws Exception;
 
     @Override
-    protected HTTPResponse<String> handle(HTTPRequest r) throws Exception {
-        Map<String, Object> context = render(r);
+    protected HTTPResponse<String> getResponse(HTTPRequest r) throws Exception {
+        Map<String, Object> context = getContext(r);
         try {
             return new HTTPResponse<>(200, templateEngine.render(templateFileLocator.getString(template, Charset.forName("UTF-8"), null), context), "text/html");
         } catch (IOException ex) {
@@ -51,7 +51,7 @@ public abstract class HTMLTemplateRoute extends Route {
     public static HTMLTemplateRoute withoutContext(String template) {
         return new HTMLTemplateRoute(template, false) {
             @Override
-            protected Map<String, Object> render(HTTPRequest request) {
+            protected Map<String, Object> getContext(HTTPRequest request) {
                 return null;
             }
         };

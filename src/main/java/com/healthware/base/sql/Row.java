@@ -2,10 +2,7 @@ package com.healthware.base.sql;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class Row {
     Table table = null;
@@ -21,15 +18,6 @@ public abstract class Row {
                     columns.put(field.getAnnotation(Column.class).value(), null);
                 }
             });
-        Arrays.stream(this.getClass().getFields())
-            .filter(field -> field.getAnnotation(PrimaryKey.class) != null)
-            .forEach(field -> {
-                try {
-                    columns.put(field.getAnnotation(PrimaryKey.class).value(), field.get(this));
-                } catch (IllegalAccessException ex) {
-                    columns.put(field.getAnnotation(PrimaryKey.class).value(), null);
-                }
-            });
         return columns;
     }
 
@@ -40,11 +28,6 @@ public abstract class Row {
             .forEach(field -> {
                 columns.put(field.getAnnotation(Column.class).value(), field);
             });
-        Arrays.stream(this.getClass().getFields())
-            .filter(field -> field.getAnnotation(PrimaryKey.class) != null)
-            .forEach(field -> {
-                columns.put(field.getAnnotation(PrimaryKey.class).value(), field);
-            });
         return columns;
     }
 
@@ -52,12 +35,17 @@ public abstract class Row {
         Optional<Field> primaryKeyField = Arrays.stream(this.getClass().getFields())
             .filter(field -> field.getAnnotation(PrimaryKey.class) != null)
             .findFirst();
-        if (primaryKeyField.isPresent()) return primaryKeyField.get().getDeclaredAnnotation(PrimaryKey.class).value();
+        if (primaryKeyField.isPresent()) return primaryKeyField.get().getDeclaredAnnotation(Column.class).value();
         else throw new NoSuchFieldException("Row class does not have a primary key specified");
     }
 
     public void update() throws Exception {
-        if (table == null) throw new SQLException("Row has not been inserted into a table");
-        else table.update(getPrimaryKeyName(), getColumnValues());
+        if (table == null) {
+            throw new SQLException("Row has not been inserted into a table");
+        } else {
+            Map<String, Object> columnValues = getColumnValues();
+            String primaryKeyName = getPrimaryKeyName();
+            table.update(Collections.singletonMap(primaryKeyName, columnValues.get(primaryKeyName)), columnValues);
+        }
     }
 }

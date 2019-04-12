@@ -4,23 +4,25 @@ import com.healthware.Utilities;
 import spark.Request;
 import spark.Response;
 
-public abstract class RouteWithJSONBody<T> {
-    protected abstract HTTPResponse handle(T body, HTTPRequest request) throws Exception;
+import static com.healthware.base.http.HTTPResponse.status;
 
-    public String handle(Request q, Response r, Class<T> bodyType) {
+public abstract class RouteWithJSONBody<T> extends Route {
+    private Class<T> bodyType;
+
+    protected RouteWithJSONBody(Class<T> bodyType) {
+        this.bodyType = bodyType;
+    }
+
+    protected abstract HTTPResponse<String> getResponse(T body, HTTPRequest request) throws Exception;
+
+    @Override
+    protected HTTPResponse<String> getResponse(HTTPRequest request) throws Exception {
         T body;
         try {
-            body = Utilities.deserializeJSON(q.body(), bodyType);
+            body = Utilities.deserializeJSON(request.body, bodyType);
         } catch (Exception ex) {
-            return HTTPResponse.status(400).apply(r);
+            return status(400);
         }
-
-        HTTPResponse response;
-        try {
-            response = handle(body, new HTTPRequest(q));
-        } catch (Exception ex) {
-            return HTTPResponse.status(500).apply(r);
-        }
-        return response.apply(r);
+        return getResponse(body, request);
     }
 }
