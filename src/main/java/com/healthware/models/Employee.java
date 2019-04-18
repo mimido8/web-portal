@@ -1,15 +1,20 @@
 package com.healthware.models;
 
-public class Employee {
-    //create?
+import com.healthware.Utilities;
+import com.healthware.base.sql.Column;
+import com.healthware.base.sql.PrimaryKey;
+import com.healthware.base.sql.Row;
 
-    public long id;
-    public long accountID;
-    public String name;
-    public String phone;
+public class Employee extends Row {
+    public @PrimaryKey @Column("id") long id;
+    public @Column("account_id") long accountID;
+    public @Column("name") String name;
+    public @Column("phone") String phone;
 
-    private Employee(long id, long accountID, String name, String phone) {
-        this.id = id;
+    public Employee() { }
+
+    private Employee(long accountID, String name, String phone) {
+        this.id = Utilities.getNextUID();
         this.accountID = accountID;
         this.name = name;
         this.phone = phone;

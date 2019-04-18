@@ -87,7 +87,7 @@ public class Database {
 
     void delete(String into, Map<String, Object> conditions) throws SQLException {
         PreparedStatement statement = connectionPool.getConnection().prepareStatement(
-                "DELETE FROM " + into +  " WHERE " + conditionList(conditions.entrySet()));
+                "DELETE FROM " + into + conditionList(conditions.entrySet()));
         if (statement.executeUpdate() <= 0) throw new SQLException("No row was deleted");
     }
 }

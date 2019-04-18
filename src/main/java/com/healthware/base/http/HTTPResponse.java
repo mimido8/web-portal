@@ -53,4 +53,8 @@ public class HTTPResponse<T> {
     public static HTTPResponse<String> redirect(String url) {
         return new HTTPResponse<>(url);
     }
+
+    public static HTTPResponse object(Object data) {
+        return new HTTPResponse<>(200, data, null);
+    }
 }

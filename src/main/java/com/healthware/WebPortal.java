@@ -6,6 +6,7 @@ import com.healthware.base.sql.Table;
 import com.healthware.messages.AuthorizationBody;
 import com.healthware.messages.PatientAccountCreationBody;
 import com.healthware.models.Account;
+import com.healthware.models.Plan;
 import com.healthware.routes.*;
 import org.slf4j.Logger;
 import spark.Request;
@@ -90,13 +91,14 @@ public class WebPortal {
         logger.info("Configuring HTTP server");
         port(8080);
         externalStaticFileLocation("public");
-        route(Spark::get, new PatientAccountCreationRoute(accounts), "/create-account");
-        route(Spark::post, new AuthorizationRoute(accounts, sessions), "/authorize");
+        route(Spark::get, new PatientAccountCreationRoute(accounts), "/api/create-account");
+        route(Spark::post, new AuthorizationRoute(accounts, sessions), "/api/authorize");
         alias("/portal/dashboard", "/portal");
         alias("/admin/dashboard", "/admin");
         filter(Spark::before, new AuthenticationFilter(sessions), "/portal/*", "/admin/*");
         filter(Spark::before, new PatientAuthenticationFilter(sessions), "/portal/*");
         filter(Spark::before, new EmployeeAuthenticationFilter(sessions), "/admin/*");
         route(Spark::get, (request, response) -> HTMLTemplateRoute.withoutContext(request.params("view") + ".html"), "/:view");
+        route(Spark::get, new PlansRoute(database.getTable("plans", Plan.class), sessions), "/api/plans");
     }
 }
