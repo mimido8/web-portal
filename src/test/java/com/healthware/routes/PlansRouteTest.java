@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -38,7 +37,7 @@ public class PlansRouteTest {
 
     @Test
     public void returnsPlans() throws Exception {
-        PlansRoute route = new PlansRoute(plans, Collections.emptyMap());
+        PlansRoute route = new PlansRoute(plans);
         HTTPResponse<List<Plan>> response = route.getObject(new HTTPRequest(null, null));
 
         assertNotNull(response);

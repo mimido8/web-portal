@@ -99,6 +99,6 @@ public class WebPortal {
         filter(Spark::before, new PatientAuthenticationFilter(sessions), "/portal/*");
         filter(Spark::before, new EmployeeAuthenticationFilter(sessions), "/admin/*");
         route(Spark::get, (request, response) -> HTMLTemplateRoute.withoutContext(request.params("view") + ".html"), "/:view");
-        route(Spark::get, new PlansRoute(database.getTable("plans", Plan.class), sessions), "/api/plans");
+        route(Spark::get, new PlansRoute(database.getTable("plans", Plan.class)), "/api/plans");
     }
 }
