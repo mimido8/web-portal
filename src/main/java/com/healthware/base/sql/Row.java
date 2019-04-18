@@ -48,4 +48,9 @@ public abstract class Row {
             table.update(Collections.singletonMap(primaryKeyName, columnValues.get(primaryKeyName)), columnValues);
         }
     }
+
+    public void delete() throws Exception {
+        String primaryKey = getPrimaryKeyName();
+        table.delete(Collections.singletonMap(primaryKey, getColumnValues().get(primaryKey)));
+    }
 }
