@@ -2,6 +2,7 @@ package com.healthware;
 
 import com.healthware.base.http.*;
 import com.healthware.base.sql.Database;
+import com.healthware.base.sql.Table;
 import com.healthware.messages.AuthorizationBody;
 import com.healthware.messages.PatientAccountCreationBody;
 import com.healthware.models.Account;
@@ -55,6 +56,13 @@ public class WebPortal {
         }));
     }
 
+    private static void alias(String redirect, String... paths) {
+        Arrays.stream(paths).forEach(path -> Spark.get(path, (request, response) -> {
+            response.redirect(redirect);
+            return "";
+        }));
+    }
+
     public static void main(String[] args) {
         Logger logger = getLogger(WebPortal.class);
 
@@ -76,15 +84,19 @@ public class WebPortal {
             return;
         }
 
+        Table<Account> accounts = database.getTable("accounts", Account.class);
         Map<String, Session> sessions = new HashMap<>();
 
         logger.info("Configuring HTTP server");
         port(8080);
         externalStaticFileLocation("public");
-        route(Spark::get, (request, response) -> HTMLTemplateRoute.withoutContext(request.params("view") + ".html"), ":/view");
-        route(Spark::post, new AuthorizationRoute(database.getTable("accounts", Account.class), sessions), "/authorize");
-        filter(Spark::before, new AuthenticationFilter(sessions), "/patient/:view", "/employee/:view");
-        filter(Spark::before, new PatientAuthenticationFilter(sessions), "/patient/:view");
-        filter(Spark::before, new EmployeeAuthenticationFilter(sessions), "/patient/:view");
+        route(Spark::get, new PatientAccountCreationRoute(accounts), "/create-account");
+        route(Spark::post, new AuthorizationRoute(accounts, sessions), "/authorize");
+        alias("/portal/dashboard", "/portal");
+        alias("/admin/dashboard", "/admin");
+        filter(Spark::before, new AuthenticationFilter(sessions), "/portal/*", "/admin/*");
+        filter(Spark::before, new PatientAuthenticationFilter(sessions), "/portal/*");
+        filter(Spark::before, new EmployeeAuthenticationFilter(sessions), "/admin/*");
+        route(Spark::get, (request, response) -> HTMLTemplateRoute.withoutContext(request.params("view") + ".html"), "/:view");
     }
 }
