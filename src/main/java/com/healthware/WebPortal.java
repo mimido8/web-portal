@@ -7,6 +7,7 @@ import com.healthware.messages.AuthorizationBody;
 import com.healthware.messages.PatientAccountCreationBody;
 import com.healthware.models.Account;
 import com.healthware.models.Plan;
+import com.healthware.models.Employee;
 import com.healthware.routes.*;
 import org.slf4j.Logger;
 import spark.Request;
@@ -100,5 +101,6 @@ public class WebPortal {
         filter(Spark::before, new EmployeeAuthenticationFilter(sessions), "/admin/*");
         route(Spark::get, (request, response) -> HTMLTemplateRoute.withoutContext(request.params("view") + ".html"), "/:view");
         route(Spark::get, new PlansRoute(database.getTable("plans", Plan.class)), "/api/plans");
+        route(Spark::get, new EmployeeRoute(database.getTable("employee", Employee.class)), "/api/employee");
     }
 }
