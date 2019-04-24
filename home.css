@@ -1,0 +1,183 @@
+html {
+	font-size: 50%;
+	margin: 0;
+	padding: 0;
+}
+body {
+	background-color: #021825;
+	margin: 0;
+	padding: 0;
+}
+
+
+@font-face {
+font-family: Bahn;
+src: local('Bahnschrift')
+}
+.navbox {
+	font-family: Bahn;
+	}
+header {
+	color: white;
+position: fixed;
+top: 0;
+padding: 0;
+}	
+
+
+nav {
+background-color: #FF7052;
+position: fixed;
+left: 0;
+width: 100% ;
+height: 6em;
+text-align: right;
+padding: 0;
+margin: 0;
+border-bottom: 2px double #480404;
+border-radius: 5px;
+box-shadow: 0 0px 4px 0px #000000;
+color: #fefefe;
+}
+
+
+.logo {
+	float: left;
+text-transform: uppercase;
+  font-size: 2.6em;
+	letter-spacing: .1em;
+            text-align: left;
+            padding-left: 1%;
+			padding-top: .8%;
+			padding-bottom: 1%;
+}	
+.navbox li, a{
+	  letter-spacing: .1em;	
+	  display: inline-block;
+	  text-decoration: none;
+	  list-style-type: none;
+	  font-size: 1.2em;
+	  padding-left: 1em;
+	  padding-top: .7%;
+	  padding-right: 3%;
+	  color: #fefefe;
+	  transition: font-size 2s;
+}
+
+.navAbout, .navRegister, .navLogin, .navFAQs {
+	transition: font-size 2s;
+}
+
+.navAbout:hover, .navRegister:hover, .navLogin:hover, .navFAQs:hover {
+	 font-size: 1.4em;
+}
+.navRegister, .navLogin {
+	cursor: auto;
+}
+
+.navFAQs {
+	cursor: help;
+}
+
+@font-face {
+font-family: Bahn;
+src: local('Bahnschrift')
+}
+
+#main {
+	position: inherit;
+	padding: 30px;
+    margin-top: 3%;
+    margin-left: auto;
+	margin-right: auto;
+	background-image: url("images/bkgrd.jpg");
+	background-repeat: no-repeat;	
+	height: 15em;
+	width: 70%;
+	color: #ffeff6;
+	text-align: center;
+	font-family: Bahn;
+	font-size: 5em;
+	}
+
+.imgcaption {
+color: white;
+font-size: 2em;
+}
+
+#tablesbox {
+	display: inline-flex;
+	margin-top: 10%;
+	color: white;
+}
+
+.table1, .table2, .table3 {
+		margin: 0px 30px 0px 20px;
+		width: 28%;
+		border-radius: 5px;
+		border: double rgb(250, 235, 215);
+		background-color: rgba(250, 235, 215, .6);
+		opacity: 70%;
+		height: 6.75em;
+		transition: width 2s, height 2s;
+				}
+
+.table1:hover, .table2:hover, .table3:hover {
+	height: 7em;
+	width: 40%;
+	cursor: pointer;
+	
+	}				
+
+#tablesbox h2 {
+	text-decoration: underline #ff9797;
+	font-size: 45px;
+}
+
+#tablesbox p {
+	color: white;
+	font-size: 20px;
+}
+
+footer {
+	background-color: white;
+text-align: right;
+border-bottom: 2px double #480404;
+box-shadow: 0 0px 4px 0px #000000;
+color: #792b2b;
+	display: inline-block;
+	position: fixed;
+	width: -webkit-fill-available;
+	height: 6em;
+	bottom: 0;
+	margin-bottom: 1.5%;
+}
+
+.copyright, .contact {
+	display: inline-block;
+	width: 49%;
+	text-align: center;
+}
+
+.copyright {
+	padding-top: .8em;
+	font-size: 1.4em;
+}
+
+button {
+color: #67bcdc;
+text-transform: uppercase;
+border: 4px solid #494949 !important;
+border-radius: 6px;
+}
+
+button:hover {
+	color: #494949 !important;
+border-radius: 50px;
+border-color: #494949 !important;
+transition: all 0.3s ease 0s;
+}
+
+	
+
+	

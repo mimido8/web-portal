@@ -1,0 +1,88 @@
+html {
+	font-size: 50%;
+	background-color: #021825;
+}
+
+body {
+	background-color: #021825;
+}
+
+@font-face {
+font-family: Bahn;
+src: local('Bahnschrift')
+}
+.navbox {
+	font-family: Bahn;
+	}
+header {
+	color: #FF7052;
+position: fixed;
+top: 0;
+padding: 0;
+}	
+
+
+nav {
+background-color: #FF7052;
+position: fixed;
+left: 0;
+width: 100% ;
+height: 6em;
+text-align: right;
+padding: 0;
+margin: 0;
+border-bottom: 2px double #480404;
+border-radius: 5px;
+box-shadow: 0 0px 4px 0px #000000;
+color: #fefefe;
+}
+
+a {
+	color:#fefefe;
+}
+
+.logo {
+	float: left;
+text-transform: uppercase;
+  font-size: 2.6em;
+	letter-spacing: .1em;
+            text-align: left;
+            padding-left: 1%;
+			padding-top: .8%;
+}
+
+.FAQ {
+	float: middle;
+text-transform: uppercase;
+  font-size: 2em;
+	letter-spacing: .1em;
+            text-align: center;
+			padding-top: 1%;
+			padding-bottom: 1%;
+			padding-right: 10%;
+}
+
+section {
+	font-family: Bahn;
+	margin-top: 10%;
+	color: white;
+	font-size: 4em;
+}
+
+a {
+	text-decoration: none;
+}
+
+section {
+	color:#e86d4f;
+	font-size: 5em;
+	width: 50%;
+	height: 12em;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 3%;
+	margin-top: 5%;
+	text-align: center;
+	border-bottom: .5em dashed #f3f6f9;
+	border-radius: 1em;
+}
