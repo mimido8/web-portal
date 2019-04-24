@@ -18,7 +18,7 @@ public class Patient extends Row {
 
     public Patient() { }
 
-    private Patient(long accountID, String name, Date birthDate, String phone, Date signupDate, long planID) {
+    public Patient(long accountID, String name, Date birthDate, String phone, Date signupDate, long planID) {
         this.id = Utilities.getNextUID();
         this.accountID = accountID;
         this.name = name;

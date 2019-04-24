@@ -13,7 +13,7 @@ public class Employee extends Row {
 
     public Employee() { }
 
-    private Employee(long accountID, String name, String phone) {
+    public Employee(long accountID, String name, String phone) {
         this.id = Utilities.getNextUID();
         this.accountID = accountID;
         this.name = name;

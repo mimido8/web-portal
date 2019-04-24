@@ -19,7 +19,7 @@ public class Claim extends Row {
 
     public Claim() { }
 
-    private Claim(long providerID, long patientID, String serviceCode, String description, Date dateSubmitted, BigDecimal amount) {
+    public Claim(long providerID, long patientID, String serviceCode, String description, Date dateSubmitted, BigDecimal amount) {
         this.id = Utilities.getNextUID();
         this.providerID = providerID;
         this.patientID = patientID;
