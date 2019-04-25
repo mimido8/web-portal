@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, height=device-height initial-scale=1.0 user-scalable=no">
-	<link rel='stylesheet' type='text/css' href='home.css'>
+	<link rel='stylesheet' type='text/css' href='/static/home.css'>
 	<title>Healthware</title>
 </head>
 
@@ -13,10 +13,10 @@
 		<nav>
 			<div class="logo">Healthware</div>	
 			<ul>
-				<li><a class='navAbout' href="about/index.html">About</a></li>
-				<li><a class='navRegister' href="register/index.html">Register</a></li>
-				<li><a class='navLogin' href="login/index.html">Login</a></li>
-				<li><a class='navFAQs' href="FAQs/index.html">FAQs</a></li>
+				<li><a class='navAbout' href="/about">About</a></li>
+				<li><a class='navRegister' href="/register">Register</a></li>
+				<li><a class='navLogin' href="/login">Login</a></li>
+				<li><a class='navFAQs' href="/FAQs">FAQs</a></li>
 			</ul>
 		</nav>
 	</header>	
@@ -56,7 +56,7 @@
 <script type="text/javascript"> 
 	let button = document.getElementsByClassName('button1');
 		button.onclick = function() {
-	window.location.href = "contact/index.html";
+	window.location.href = "/contact";
 	};
 </script>
 

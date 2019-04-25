@@ -3,8 +3,6 @@ package com.healthware;
 import com.healthware.base.http.*;
 import com.healthware.base.sql.Database;
 import com.healthware.base.sql.Table;
-import com.healthware.messages.AuthorizationBody;
-import com.healthware.messages.PatientAccountCreationBody;
 import com.healthware.models.Account;
 import com.healthware.models.Plan;
 import com.healthware.models.Employee;
@@ -92,6 +90,7 @@ public class WebPortal {
         logger.info("Configuring HTTP server");
         port(8080);
         externalStaticFileLocation("public");
+        alias("/home", "/");
         route(Spark::get, new PatientAccountCreationRoute(accounts), "/api/create-account");
         route(Spark::post, new AuthorizationRoute(accounts, sessions), "/api/authorize");
         alias("/portal/dashboard", "/portal");

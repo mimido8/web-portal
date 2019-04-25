@@ -14,26 +14,23 @@ $( ".input" ).focusout(function() {
   return false;
 });
 $(".submit").click(function() {
-	document.location.href='../individuals/index.html'
+	fetch("/api/authorize", {
+    	method: "POST",
+    	cache: "no-cache",
+    	redirect: "manual",
+    	body: {
+    		username: $('.emaill'),
+    		password: $('.paswordd'),
+    	}
+    })
+    .then(response => {
+    	if (response.status === 302) {
+    		return response.text()
+    	} else {
+    		throw 'Not redirect'
+    	}
+    })
+    .catch(err => {
+    	console.log(err)
+    })
 });
-
-fetch("localhost:8080/authorize", {
-	method: "POST",
-	cache: "no-cache",
-	redirect: "manual",
-	body: {
-		username: $('.emaill'),
-		password: $('.paswordd'),
-	}
-})
-.then(response => {
-	if (response.status === 302) {
-		window.location.href = response.text()
-	} else {
-		throw response.text()
-	}
-})
-.catch(err => {
-	//invalid Login
-	//
-})

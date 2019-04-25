@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        <a href="./create-patient-account">Create Account</a>
+        <br>
+        <label for="username">Username: </label>
+        <input id="username" type="text"/>
+        <br>
+        <label for="password">Password: </label>
+        <input id="password" type="password"/>
+        <br>
+        <span id="error-message" style="display:none; color:red;">Invalid credentials<br></span>
+        <button id="login">Login</button>
+        <script>
+            let errorMessageElement = document.querySelector('#error-message')
+            document.querySelector('#login').addEventListener('click', e => {
+                let body = JSON.stringify({
+                    username: document.querySelector('#username').value,
+                    password: document.querySelector('#password').value
+                })
+                fetch('./api/authorize', {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body
+                })
+                .then(response => {
+                    if (response.status !== 200) {
+                        errorMessageElement.textContent = `Failed to log in: ${response.status} ${response.statusMessage}`
+                        errorMessageElement.style.display = 'block'
+                    } else {
+                        window.location.replace('./patient-dashboard')
+                    }
+                })
+                .catch(err => {
+                    errorMessageElement.textContent = `Failed to log in: ${err}`
+                    errorMessageElement.style.display = 'block'
+                })
+            });
+       </script>
+    </body>
+</html>
